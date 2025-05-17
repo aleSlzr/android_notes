@@ -1,6 +1,72 @@
 #android #android/kotlin
+
 # Things to learn and improve 📚
+
+## <u>General Stuff</u>
+
+### Code review
+1. **Formatting/Styling** - Always follow definitive formatting tools and standards.
+2. **Readability** - Ideally speaking, a pull request should be like a narrative. Naming conventions and code structure.
+3. **Logical correctness** - Basic level of functionality for which the change is intended.
+4. **Reusability** - Planning for lesser code is also good code.
+5. **Design** - Code components should be extensible for the foreseeable future
+6. **Tests/Logging/metrics** - Applicable for backend systems and applications.
+7. **Backward compatibility** - You might need a lot of context to evaluate this.
+8. **Sugar syntax** - Suggest a better syntax and better usage of language constructs (This might look like showing off, but see how an alternative syntax could add value and optimize at a low level)
+9. **Approve.**
+
+### ProGuard/R8
+#### What classes should be avoided [(-keep)](https://blog.mindorks.com/things-to-care-while-using-proguard-in-android-application/)
+- Exclude ProGuard from <span style="background:#d3f8b6">Data Classes</span>
+	- For example, if you are having a class named **User** and it contains variable like **firstName** and **lastName** , then the <span style="background:#d3f8b6">Proguard will change your <b>User</b> class name as <b>A</b> or something like that. At the same time, your variable names may be changed to some <b>x</b> , <b>y</b> , <b>z</b> . So, if you want to store the data of the same variable stored, in the Database you will get a run time exception as no such field will be found in the database.</span>
+- Don’t use Fragment TAGs while using Proguard
+	- So, using **FragmentName.class.getSimpleName()** should be avoided.
+- Handle Reflection
+	- So, always keep the class using reflection in your Proguard rules.
+- Handle View
+	- Whenever you create your own view in Android application make sure the view class that you are making is kept in the Proguard rule otherwise you will get class not found exception.
+- Adding Proguard rules for libraries
+	- In our Android Application, we use a number of open source libraries. But at the same time if you are using Progurad then you must include the Proguard rules of the libraries you are using if any.
+- Keep Native codes
+	- While using native code in your Android application i.e. while using c++ code in your Android application, you must be aware of the consequences of the obfuscation by Proguard.
+- Resource opening from JAR/APK
+	- So, you should keep the names of classes that load resources from the APK in your Proguard rules.
+[Rules to implement :FarHandPointUp:](https://engineering.teknasyon.com/code-optimization-with-proguard-and-r8-in-android-4d92e15a398b)
+[Practical Examples](https://medium.com/androiddevelopers/practical-proguard-rules-examples-5640a3907dc9)
+
+#### Minified debug build type
+The default build types are configured such that _debug_ doesn’t run ProGuard. That makes sense, because we want to iterate and compile fast when developing, but still want the release build to use ProGuard to be as small and optimized as possible.
+
+But in order to fully test and debug any ProGuard problems, it’s good to set up a separate, minified debug build like this:
+
+``` gradle
+buildTypes {  
+  debugMini {  
+    initWith debug  
+    minifyEnabled true  
+    shrinkResources true  
+    proguardFiles getDefaultProguardFile('proguard-android.txt'),   
+                  'proguard-rules.pro'
+    matchingFallbacks = ['debug']  
+  }  
+}
+```
+
+
+With this build type, you’ll be able to [connect the debugger](https://developer.android.com/studio/debug/index.html), [run UI tests](https://developer.android.com/training/testing/ui-testing/espresso-testing.html) (also on a CI server) or [monkey test](https://developer.android.com/studio/test/monkey.html) your app for possible problems on a build that’s as close to your release build as possible.
+
+#### Dependency Injection
+ There are libraries that solve this problem by automating the process of creating and providing dependencies. They fit into two categories:
+- <span style="background:#d3f8b6">Reflection-based</span> solutions that connect dependencies at runtime.
+	- Koin??
+- <span style="background:#d3f8b6">Static</span> solutions that generate the code to connect dependencies at compile time.
+	- Dagger Hilt
 ## <u>Kotlin</u>
+
+### Data Class
+- Data classes in Kotlin are primarily <span style="background:#d3f8b6">used to hold data.</span> For each data class, the compiler automatically generates additional member functions that <span style="background:#d3f8b6">allow you to print an instance to readable output, compare instances, copy instances,</span> and more.
+### Sealed Class
+- Provide a robust way to <span style="background:#d3f8b6">define restricted class hierarchies</span><span style="background:#d3f8b6">, improving type safety and maintainability.</span> By ensuring all subclasses are known at compile-time, sealed classes facilitate exhaustive `when` expressions and controlled inheritance
 ### Extension functions
 - Kotlin provides <span style="background:#d3f8b6">the ability to extend a class or an interface with new functionality without having to inherit from the class or use design patterns</span> such as ***Decorator***. This is done via special declarations called ***extensions***.
 - By defining an extension, <span style="background:#d3f8b6">you are not inserting new members into a class, only making new functions callable with the dot-notation on variables of this type.</span>
@@ -9,7 +75,7 @@
 	- The `lateinit` keyword in Kotlin enables the declaration of non-nullable properties without immediate initialization. This is beneficial when dealing with properties that necessitate a context or extensive initialization that cannot be done during object creation. However, it is crucial to initialize `lateinit` properties before accessing them.
 	- Is useful when <span style="background:#d3f8b6">working with properties that require a context or heavy initialization that cannot be performed during object creation.</span> It provides flexibility by deferring the initialization to a more suitable time, such as within a specific method or initialization block. This can enhance performance by avoiding unnecessary computations or initializations until they are needed.
 - **lazy**
-	- The property will only be computed and initialized when it is accessed for the first time. Subsequent accesses to the property will return the cached value.
+	- The property will <span style="background:#d3f8b6">only be computed and initialized when it is accessed for the first time.</span> Subsequent accesses to the property will return the cached value.
 	- Initialization <span style="background:#d3f8b6">is beneficial when dealing with properties that are computationally expensive to initialize but may not be needed throughout the object's entire lifespan.</span> By lazily initializing such properties, the overhead of unnecessary computations can be avoided, and <span style="background:#d3f8b6">the initialization can be postponed until the property is accessed.</span> This approach can optimize resource usage and improve overall application efficiency.
 - **Differences**
 	- **Initialization time**
@@ -66,6 +132,11 @@
 ### Ktor
 ### Koin
 - Single: creates a single instance for that object (Singleton)
+
+## Testing
+### Unit Testing
+### UI Testing
+
 ## <u>Jetpack Compose 🤖</u>
 ### Recomposition - more about [recomposition](https://developer.android.com/develop/ui/compose/mental-model)
 - In an **imperative UI model**, <span style="background:#d3f8b6">to change a widget, you call a setter on the widget to change its internal state.</span> 
@@ -131,6 +202,11 @@
 - To be created
 ## <u>Async stuff 📣</u>
 ### Coroutines
+Coroutines is a recommended solution for asynchronous programming on Android. Noteworthy features include the following:
+- **Lightweight**: You can run many coroutines on a single thread due to support for [_suspension_](https://kotlinlang.org/docs/reference/coroutines/basics.html), which doesn't block the thread where the coroutine is running. Suspending saves memory over blocking while supporting many concurrent operations.
+- **Fewer memory leaks**: Use [_structured concurrency_](https://kotlinlang.org/docs/reference/coroutines/basics.html#structured-concurrency) to run operations within a scope.
+- **Built-in cancellation support**: [Cancellation](https://kotlinlang.org/docs/reference/coroutines/cancellation-and-timeouts.html) is propagated automatically through the running coroutine hierarchy.
+- **Jetpack integration**: Many Jetpack libraries include [extensions](https://developer.android.com/kotlin/ktx) that provide full coroutines support. Some libraries also provide their own [coroutine scope](https://developer.android.com/topic/libraries/architecture/coroutines) that you can use for structured concurrency.
 #### Coroutine context
 - is a set of rules and configurations that define how the coroutine will be executed (it's like a map with possible keys and values)
 #### Job

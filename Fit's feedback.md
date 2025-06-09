@@ -55,7 +55,7 @@ buildTypes {
 
 With this build type, you’ll be able to [connect the debugger](https://developer.android.com/studio/debug/index.html), [run UI tests](https://developer.android.com/training/testing/ui-testing/espresso-testing.html) (also on a CI server) or [monkey test](https://developer.android.com/studio/test/monkey.html) your app for possible problems on a build that’s as close to your release build as possible.
 
-#### Dependency Injection
+### Dependency Injection
  There are libraries that solve this problem by automating the process of creating and providing dependencies. They fit into two categories:
 - <span style="background:#d3f8b6">Reflection-based</span> solutions that connect dependencies at runtime.
 	- Koin??
@@ -127,7 +127,10 @@ With this build type, you’ll be able to [connect the debugger](https://develop
 - **also**
 	- Additional effects
 ### High order functions
-- get more details
+A higher-order function is a function that takes functions as parameters, or returns a function.
+### Lambas
+**Lambdas Expressions are essentially anonymous functions that we can treat as values –** we can, for example, pass them as arguments to methods, return them, or do any other thing we could do with a normal object.
+
 ## <u>Kotlin Multiplatform - KMM</u>
 ### Ktor
 ### Koin
@@ -265,6 +268,14 @@ Coroutines is a recommended solution for asynchronous programming on Android. No
 ##### ViewModel Scope
 - <span style="background:#d3f8b6">The only difference is that the coroutine in this scope will live as long the view model is alive.</span>
 - This scope survives orientation changes
+
+### Live Data
+LiveData is a data holder class that is lifecycle-aware, <span style="background:#d3f8b6">meaning it respects the lifecycle of Android components such as activities and fragments</span>. LiveData provides observable data that <span style="background:#d3f8b6">can be observed by multiple observers, usually UI components, and automatically updates them when the data changes</span>. LiveData simplifies the management of UI components, as it automatically handles subscription and unsubscription based on the lifecycle state.
+
+- **Lifecycle awareness:** LiveData is lifecycle-aware and automatically manages the subscription and unsubscription of observers based on the lifecycle state of the associated component.
+- **Main thread affinity:** LiveData ensures that the observer’s onChanged() method is called on the main (UI) thread, allowing direct UI updates.
+- **No backpressure:** LiveData does not support backpressure handling, making it suitable for scenarios where the data stream doesn’t need to be controlled or limited.
+
 ### Flow
 #### Cold Flows
 - <span style="background:#d3f8b6">Are created on-demand and emit data when they’re being observed.</span>
@@ -286,7 +297,12 @@ Coroutines is a recommended solution for asynchronous programming on Android. No
 		- Returns a StateFlow
 ### Differences between Flow and Coroutines
 - In coroutines, a _flow_ is a type that can emit multiple values sequentially, as opposed to _suspend functions_ that return only a single value. For example, you can use a flow to receive live updates from a database.
-- Flows are built on top of coroutines and can provide multiple values. A flow is conceptually a _stream of data_ that can be computed asynchronously. The emitted values must be of the same type. For example, a `Flow<Int>` is a flow that emits integer values.
+- <span style="background:#d3f8b6">Flows are built on top of coroutines and can provide multiple values.</span> A flow is conceptually a _stream of data_ that can be computed asynchronously. The emitted values must be of the same type. For example, a `Flow<Int>` is a flow that emits integer values.
+### Differences between Flow and LiveData
+- **Backpressure handling**: <span style="background:#d3f8b6">Flow provides built-in support for backpressure</span>, allowing control over the rate of data emission and processing, whereas <span style="background:#d3f8b6">LiveData doesn’t support backpressure handling.</span>
+- **Sequential vs. parallel processing:** <span style="background:#d3f8b6">Flow offers a rich set of operators for sequential and structured processing</span>, while <span style="background:#d3f8b6">LiveData focuses on delivering the latest data to observers.</span>
+- **Kotlin Coroutines integration:** <span style="background:#d3f8b6">Flow is tightly integrated with Kotlin Coroutines</span>, providing a cohesive asynchronous programming experience, whereas <span style="background:#d3f8b6">LiveData is not specifically tied to coroutines.</span>
+
 ### MutableState and MutableStateFlow
 #### MutableState
 - **Scope:** <span style="background:#d3f8b6">Designed to manage UI State within compose</span>
